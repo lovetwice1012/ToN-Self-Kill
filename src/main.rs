@@ -1,15 +1,12 @@
-use enigo::{
-    Direction::{Press, Release},
-    Enigo, Key, Keyboard, Settings,
-};
+use enigo::{Enigo, Keyboard, Key};
 use std::thread;
 use std::time::Duration;
 
 fn main() {
     let mut enigo = Enigo::new();
-    enigo.key(Key::Other(187), Press).unwrap();
-    enigo.key(Key::Other(222), Press).unwrap();
+    enigo.key_down(Key::Other(187));
+    enigo.key_down(Key::Other(222));
     thread::sleep(Duration::from_secs(5));
-    enigo.key(Key::Other(187), Release).unwrap();
-    enigo.key(Key::Other(222), Release).unwrap();
+    enigo.key_up(Key::Other(187));
+    enigo.key_up(Key::Other(222));
 }
