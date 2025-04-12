@@ -5,7 +5,6 @@ edition = "2024"
 
 [dependencies]
 enigo = "*"
-rosc = "*"
 
 [profile.release]
 strip = true
