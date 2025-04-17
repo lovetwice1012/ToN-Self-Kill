@@ -2,22 +2,13 @@
 name = "ToN-Self-Kill"
 version = "0.1.0"
 edition = "2024"
+build = "build.rs"
 
 [dependencies]
-winapi = { version = "0.3", features = ["winuser"] }
-futures-util = "0.3"
-enigo = "0.3"
-tokio = { version = "1", features = ["full"] }  # tokio
-tokio-tungstenite = "0.15"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+enigo = "*"
 
-[profile.release]
-strip = true
-lto = true
-codegen-units = 1
-panic = "abort"
-windows-subsystem = "windows"
+[lib]
+crate-type = ["cdylib"]
 
-[profile.dev]
-windows-subsystem = "windows"
+[build-dependencies]
+csbindgen = "1.8.0"
