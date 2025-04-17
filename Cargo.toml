@@ -7,9 +7,10 @@ edition = "2024"
 enigo = "*"
 tokio = { version = "*", features = ["full"] }
 tokio-tungstenite = "*"
-winapi = { version = "*", features = ["user32"] } 
+windows = { version = "latest", features = ["user32"] } 
 serde = { version = "*", features = ["derive"] }
 serde_json = "*"
+libc = "*"
 
 [profile.release]
 strip = true
