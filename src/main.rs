@@ -1,10 +1,10 @@
-use enigo::{Direction::{Press, Release}, Enigo, Key};
-use serde::{Deserialize, Serialize};
-use std::{thread, time::Duration};
+use enigo::{Enigo, Keyboard, Key, Direction::{Press, Release}, Settings};
+use futures_util::stream::StreamExt;
 use tokio::net::TcpListener;
 use tokio_tungstenite::tungstenite::protocol::Message;
-use tokio_tungstenite::tungstenite::Error as WsError;
 use winapi::um::winuser::{FindWindowW, SetForegroundWindow};
+use std::{thread, time::Duration};
+use serde::{Deserialize, Serialize};
 use std::ptr::null_mut;
 use std::ffi::CString;
 
@@ -15,8 +15,7 @@ struct Command {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), WsError> {
-    // WebSocket サーバーの待機
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("127.0.0.1:64000").await?;
     println!("WebSocket サーバーがポート64000で待機しています...");
     
@@ -24,7 +23,6 @@ async fn main() -> Result<(), WsError> {
         let ws_stream = tokio_tungstenite::accept_async(stream).await?;
         println!("クライアントと接続されました!");
 
-        // メッセージを受信
         let mut ws_stream = ws_stream;
         while let Some(Ok(msg)) = ws_stream.next().await {
             if let Message::Text(text) = msg {
@@ -33,13 +31,9 @@ async fn main() -> Result<(), WsError> {
                     Err(_) => continue,
                 };
 
-                // type=suside の場合にキー操作を実行
                 if command.cmd_type == "suside" {
-                    // VRChat.exe のウィンドウをフォーカス
                     focus_vrchat_window();
-                    
-                    // キー操作の実行
-                    let mut enigo = Enigo::new().unwrap();
+                    let mut enigo = Enigo::new(&Settings::default()).unwrap();
                     enigo.key(Key::Other(187), Press).unwrap();
                     enigo.key(Key::Other(222), Press).unwrap();
                     thread::sleep(Duration::from_secs(5));
@@ -53,9 +47,8 @@ async fn main() -> Result<(), WsError> {
 }
 
 fn focus_vrchat_window() {
-    // VRChat.exe のウィンドウを探してフォーカス
     unsafe {
-        let window_name = "VRChat"; // ウィンドウのタイトル
+        let window_name = "VRChat";
         let window_name_wide: Vec<u16> = CString::new(window_name)
             .unwrap()
             .into_bytes_with_nul()
