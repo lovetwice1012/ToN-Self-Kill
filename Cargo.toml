@@ -5,9 +5,18 @@ edition = "2024"
 
 [dependencies]
 enigo = "*"
+tokio = { version = "*", features = ["full"] }
+tokio-tungstenite = "*"
+winapi = { version = "*", features = ["user32"] } 
+serde = { version = "*", features = ["derive"] }
+serde_json = "*"
 
 [profile.release]
 strip = true
 lto = true
 codegen-units = 1
 panic = "abort"
+windows-subsystem = "windows"
+
+[profile.dev]
+windows-subsystem = "windows"
